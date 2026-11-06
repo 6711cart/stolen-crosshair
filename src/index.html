@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a121d">
+  <title>Stolen Crosshair</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><span>✣</span></div>
+        <div><strong>STOLEN</strong><small>CROSSHAIR STUDIO</small></div>
+      </div>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="navigation">
+        <button class="nav-item" data-page="dashboard"><span class="nav-icon">◇</span> Dashboard</button>
+        <button class="nav-item active" data-page="library"><span class="nav-icon">▦</span> Crosshair Library <span class="nav-count" id="library-count">11</span></button>
+        <button class="nav-item" data-page="customize"><span class="nav-icon">✳</span> Customize</button>
+        <button class="nav-item" data-page="effects"><span class="nav-icon">◉</span> Effects</button>
+        <button class="nav-item" data-page="image"><span class="nav-icon">▧</span> Image Upload</button>
+        <button class="nav-item" data-page="advanced"><span class="nav-icon">⚙</span> Advanced Settings</button>
+        <button class="nav-item" data-page="saved"><span class="nav-icon">♧</span> Saved Crosshairs</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="workspace-avatar">S</div>
+        <div><strong>Local workspace</strong><small>Saved on this device</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><i>/</i><strong id="breadcrumb-current">Crosshair Library</strong></div>
+        <div class="top-actions">
+          <div class="save-indicator" id="save-indicator"><i></i><span>ALL CHANGES SAVED</span></div>
+          <button class="icon-button" id="undo-button" title="Undo" aria-label="Undo">↶</button>
+          <button class="icon-button" id="redo-button" title="Redo" aria-label="Redo">↷</button>
+          <button class="small-button" id="export-button">Export config</button>
+          <button class="small-button hidden" id="import-button">Import config</button>
+          <input type="file" id="config-file" accept="application/json,.json" hidden>
+        </div>
+      </header>
+
+      <section class="page" id="page-dashboard">
+        <div class="page-head dashboard-head">
+          <div><div class="eyebrow">YOUR AIM. YOUR RULES.</div><h1>Crosshair Studio</h1><p>Build your perfect sightline. Every adjustment, instantly.</p></div>
+          <div class="head-actions">
+            <button class="secondary-button" id="randomize-button">⌁ Randomize</button>
+            <button class="secondary-button" id="compare-button">◫ Compare</button>
+            <button class="secondary-button" id="keep-on-button">◉ Keep crosshair on</button>
+            <button class="primary-button" id="save-current-button">Save crosshair</button>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel live-panel">
+            <div class="panel-heading"><div><strong>Live preview</strong><small>Centered preview · real-time rendering</small></div><span class="live-status"><i></i> LIVE</span></div>
+            <div class="preview-stage" id="dashboard-stage">
+              <div class="stage-grid"></div><div class="preview-glow"></div>
+              <canvas id="dashboard-canvas"></canvas>
+              <div class="compare-overlay hidden" id="compare-label">COMPARING CURRENT &amp; RANDOM DESIGN</div>
+              <div class="stage-tools"><button class="icon-button stage-button" id="stage-focus" title="Focus preview">⛶</button><button class="icon-button stage-button" id="stage-grid-toggle" title="Toggle grid">⊙</button></div>
+              <span class="stage-caption left-caption">PREVIEW SIMULATION</span><span class="stage-caption right-caption">LIVE POSITION · SETTINGS APPLY INSTANTLY</span>
+            </div>
+            <div class="stage-ranges">
+              <div class="range-control"><label for="dashboard-size"><span>Size</span><output id="dashboard-size-value"></output></label><input id="dashboard-size" type="range" min="10" max="72" step="1"></div>
+              <div class="range-control"><label for="dashboard-gap"><span>Gap</span><output id="dashboard-gap-value"></output></label><input id="dashboard-gap" type="range" min="0" max="24" step="1"></div>
+            </div>
+          </article>
+          <article class="panel quick-panel">
+            <div class="panel-heading"><div><strong>Quick customize</strong><small>Fine-tune your current design</small></div><button class="small-button" data-go="customize">All settings ↗</button></div>
+            <div class="quick-controls">
+              <div class="range-control"><label for="quick-thickness"><span>Thickness</span><output id="quick-thickness-value"></output></label><input id="quick-thickness" type="range" min="1" max="10" step="1"></div>
+              <div class="range-control"><label for="quick-opacity"><span>Opacity</span><output id="quick-opacity-value"></output></label><input id="quick-opacity" type="range" min="15" max="100" step="1"></div>
+              <label class="select-control"><span>Design shape</span><select id="quick-shape"></select></label>
+              <button class="rainbow-button" id="quick-rainbow"><span>🌈</span><b>Rainbow: <strong id="quick-rainbow-state">Off</strong></b></button>
+              <div class="range-control"><label for="quick-spin-speed"><span>Spin speed</span><output id="quick-spin-value"></output></label><input id="quick-spin-speed" type="range" min="0" max="360" step="5"></div>
+              <div class="button-row"><button class="secondary-button grow" id="spin-toggle">▶ Start spinning</button><button class="secondary-button grow" id="reverse-spin">↔ Reverse</button></div>
+              <div class="rotation-line">Rotation <span id="rotation-value">0° · paused</span></div>
+              <div class="setup-summary"><div class="eyebrow">YOUR CURRENT SETUP</div><div class="setup-line"><span>Active design</span><strong id="active-design">Cross</strong></div></div>
+              <button class="secondary-button full-button" id="random-motion">↻ Randomize motion</button>
+            </div>
+          </article>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>UNIQUE DESIGNS</span><strong>11 <small>ready to use</small></strong></article>
+          <article class="stat-card"><span>SAVED DESIGNS</span><strong id="saved-count-dashboard">0</strong></article>
+          <article class="stat-card"><span>COLOR STYLE</span><strong id="color-style">White <small>optional rainbow</small></strong></article>
+          <article class="stat-card"><span>UNDO HISTORY</span><strong id="history-count">0 / 0</strong></article>
+        </div>
+      </section>
+
+      <section class="page active" id="page-library">
+        <div class="page-head library-head">
+          <div><div class="eyebrow">11 UNIQUE GEOMETRIES</div><h1>Crosshair Library</h1><p>Each shape appears once. Select a design to apply it instantly.</p></div>
+          <div class="head-actions"><button class="secondary-button" id="random-library">⌁ Random design</button><button class="primary-button" id="create-design">＋ Create from scratch</button></div>
+        </div>
+        <div class="library-toolbar">
+          <label class="search-box"><span>⌕</span><input id="search" type="search" placeholder="Search designs..." autocomplete="off"></label>
+          <select id="geometry-filter" aria-label="Filter by geometry"><option value="all">All designs</option><option value="favorites">Favorites</option></select>
+          <select id="design-filter" aria-label="Filter designs"><option value="featured">Featured</option><option value="all">All variations · 50</option><option value="recent">Recently used</option></select>
+          <span class="result-count" id="result-count">11 designs</span>
+        </div>
+        <div class="preset-grid" id="preset-grid"></div>
+        <div class="empty-state hidden" id="empty-state">No designs match that search.</div>
+      </section>
+
+      <section class="page" id="page-customize">
+        <div class="page-head"><div><div class="eyebrow">BUILT AROUND YOUR PLAYSTYLE</div><h1>Customize</h1><p>Shape, position, and tune every element of your crosshair.</p></div><div class="head-actions"><button class="secondary-button" id="reset-settings">↻ Reset settings</button><button class="primary-button" id="save-design-button">Save design</button></div></div>
+        <article class="panel wide-preview">
+          <div class="panel-heading"><div><strong>Live preview</strong><small>Preview stays centered; position controls move only the desktop crosshair.</small></div><span class="live-status"><i></i> LIVE</span></div>
+          <div class="preview-stage customize-stage"><div class="stage-grid"></div><div class="preview-glow"></div><canvas id="custom-canvas"></canvas><span class="stage-caption left-caption">PREVIEW SIMULATION</span><span class="stage-caption right-caption">DESKTOP POSITION PREVIEW</span></div>
+        </article>
+        <div class="two-panel-grid customize-panels">
+          <article class="panel settings-panel">
+            <div class="panel-heading"><div><strong>Shape &amp; appearance</strong><small>Customize your crosshair's core geometry.</small></div></div>
+            <label class="select-control"><span>Shape</span><select id="shape-select"></select></label>
+            <div class="field-grid">
+              <label class="text-field"><span>Crosshair color <output id="color-label"></output></span><div class="color-input-row"><input type="color" id="color-picker"><input type="text" id="color-hex" maxlength="7" spellcheck="false"></div></label>
+              <label class="text-field"><span>Outline color <output id="outline-color-label"></output></span><div class="color-input-row"><input type="color" id="outline-picker"><input type="text" id="outline-hex" maxlength="7" spellcheck="false"></div></label>
+            </div>
+            <div class="range-control"><label for="size"><span>Size</span><output id="size-value"></output></label><input id="size" type="range" min="10" max="72" step="1"></div>
+            <div class="range-control"><label for="thickness"><span>Thickness</span><output id="thickness-value"></output></label><input id="thickness" type="range" min="1" max="10" step="1"></div>
+            <div class="range-control"><label for="gap"><span>Gap</span><output id="gap-value"></output></label><input id="gap" type="range" min="0" max="24" step="1"></div>
+            <div class="range-control"><label for="opacity"><span>Opacity</span><output id="opacity-value"></output></label><input id="opacity" type="range" min="15" max="100" step="1"></div>
+            <div class="range-control"><label for="outline"><span>Black outline</span><output id="outline-value"></output></label><input id="outline" type="range" min="0" max="6" step="1"></div>
+            <label class="toggle-row"><span><strong>Center dot</strong><small>Add a dot for extra precision.</small></span><input id="center-dot" type="checkbox"><i class="toggle-switch"></i></label>
+          </article>
+          <article class="panel settings-panel">
+            <div class="panel-heading"><div><strong>Position &amp; motion</strong><small>Move the crosshair from screen center, then tune its motion.</small></div></div>
+            <div class="range-control"><label for="position-x"><span>Left / right</span><output id="position-x-value"></output></label><input id="position-x" type="range" min="-50" max="50" step="1"><button class="range-reset" data-reset="position-x">↺</button></div>
+            <div class="range-control"><label for="position-y"><span>Up / down</span><output id="position-y-value"></output></label><input id="position-y" type="range" min="-50" max="50" step="1"><button class="range-reset" data-reset="position-y">↺</button></div>
+            <button class="secondary-button full-button" id="recenter-button">⊙ Recenter crosshair</button>
+            <div class="range-control"><label for="rotation"><span>Rotation</span><output id="rotation-input-value"></output></label><input id="rotation" type="range" min="0" max="359" step="1"><button class="range-reset" data-reset="rotation">↺</button></div>
+            <div class="range-control"><label for="spin-speed"><span>Spin speed</span><output id="spin-speed-value"></output></label><input id="spin-speed" type="range" min="0" max="360" step="5"><button class="range-reset" data-reset="spin-speed">↺</button></div>
+            <div class="button-row"><button class="secondary-button grow" id="custom-spin-toggle">▶ Start spinning</button><button class="secondary-button grow" id="custom-reverse">↔ Reverse</button><select class="direction-select" id="spin-direction"><option value="1">Clockwise</option><option value="-1">Counterclockwise</option></select></div>
+            <div class="range-control"><label for="scale"><span>Overall scale</span><output id="scale-value"></output></label><input id="scale" type="range" min="25" max="250" step="1"><button class="range-reset" data-reset="scale">↺</button></div>
+            <label class="toggle-row"><span><strong>Show crosshair</strong><small>Toggle the always-on-top overlay.</small></span><input id="show-overlay" type="checkbox"><i class="toggle-switch"></i></label>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-effects">
+        <div class="page-head"><div><div class="eyebrow">MAKE IT STAND OUT</div><h1>Motion &amp; Effects</h1><p>Fine-tune rainbow color, motion, and glow.</p></div><div class="head-actions"><button class="secondary-button" id="random-effects">⌁ Randomize effects</button></div></div>
+        <article class="panel wide-preview effects-preview"><div class="panel-heading"><div><strong>Effect preview</strong><small>Effect controls update the crosshair immediately.</small></div><span class="live-status"><i></i> LIVE</span></div><div class="preview-stage effects-stage"><div class="stage-grid"></div><div class="preview-glow"></div><canvas id="effects-canvas"></canvas><span class="stage-caption left-caption">LIVE POSITION PREVIEW</span></div></article>
+        <div class="two-panel-grid effects-panels">
+          <article class="panel settings-panel"><div class="panel-heading"><div><strong>Motion</strong><small>Control rotation speed and optional pulse.</small></div></div>
+            <label class="toggle-row"><span><strong>Rainbow color cycle</strong><small>Toggle the generated crosshair through the spectrum.</small></span><input id="rainbow-toggle" type="checkbox"><i class="toggle-switch"></i></label>
+            <div class="range-control"><label for="rainbow-speed"><span>Rainbow speed</span><output id="rainbow-speed-value"></output></label><input id="rainbow-speed" type="range" min="0.2" max="3" step="0.1"></div>
+            <div class="range-control"><label for="effects-spin-speed"><span>Spin speed</span><output id="effects-spin-speed-value"></output></label><input id="effects-spin-speed" type="range" min="0" max="360" step="5"></div>
+            <label class="toggle-row"><span><strong>Pulse animation</strong><small>Subtle rhythmic brightness shift.</small></span><input id="pulse-toggle" type="checkbox"><i class="toggle-switch"></i></label>
+            <div class="animation-state"><span>Animation state<small id="animation-state">Rotation is paused</small></span><button class="secondary-button" id="effects-spin-toggle">▶ Start</button></div>
+          </article>
+          <article class="panel settings-panel"><div class="panel-heading"><div><strong>Glow &amp; depth</strong><small>Add a luminous edge or soft shadow.</small></div></div>
+            <label class="toggle-row"><span><strong>Neon glow</strong><small>Bloom around the crosshair.</small></span><input id="glow-toggle" type="checkbox"><i class="toggle-switch"></i></label>
+            <div class="range-control"><label for="glow-intensity"><span>Glow intensity</span><output id="glow-intensity-value"></output></label><input id="glow-intensity" type="range" min="0" max="32" step="1"></div>
+            <div class="range-control"><label for="shadow-strength"><span>Shadow strength</span><output id="shadow-strength-value"></output></label><input id="shadow-strength" type="range" min="0" max="24" step="1"></div>
+            <div class="button-row effects-actions"><button class="secondary-button grow" id="random-shape">◇ Randomize shape</button><button class="secondary-button grow" id="random-effects-motion">↻ Randomize motion</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-image">
+        <div class="page-head"><div><div class="eyebrow">BRING YOUR OWN DESIGN</div><h1>Image Upload</h1><p>Use a transparent PNG as your custom on-screen crosshair.</p></div></div>
+        <article class="panel upload-panel">
+          <input type="file" id="image-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <div class="drop-zone" id="drop-zone" tabindex="0"><div class="upload-mark">▧</div><strong>Drop an image here</strong><span>or browse your files · PNG, JPG, WEBP or GIF · up to 5 MB</span><button class="primary-button" id="browse-image">Choose image</button></div>
+          <div class="uploaded-file hidden" id="uploaded-file"><span class="file-preview"><img id="uploaded-preview" alt="Uploaded crosshair preview"></span><span class="file-info"><strong id="uploaded-name"></strong><small>Image will render in the center of the overlay.</small></span><button class="secondary-button" id="remove-image">Remove image</button></div>
+          <div class="upload-tip">TIP &nbsp; Transparent PNGs work best for custom crosshairs.</div>
+        </article>
+      </section>
+
+      <section class="page" id="page-advanced">
+        <div class="page-head"><div><div class="eyebrow">YOUR APP, YOUR WAY</div><h1>Advanced Settings</h1><p>Control startup, display behavior, and app shortcuts.</p></div></div>
+        <div class="two-panel-grid advanced-panels">
+          <article class="panel settings-panel"><div class="panel-heading"><div><strong>Startup &amp; display</strong><small>Set how Stolen Crosshair behaves on this PC.</small></div></div>
+            <label class="toggle-row"><span><strong>Start with Windows</strong><small>Open the overlay automatically when you sign in.</small></span><input id="start-at-login" type="checkbox"><i class="toggle-switch"></i></label>
+            <label class="toggle-row"><span><strong>Show on all displays</strong><small>Render a centered crosshair on every connected screen.</small></span><input id="all-displays" type="checkbox"><i class="toggle-switch"></i></label>
+            <label class="toggle-row"><span><strong>Keep crosshair visible</strong><small>Show the overlay above other windows.</small></span><input id="show-overlay-advanced" type="checkbox"><i class="toggle-switch"></i></label>
+          </article>
+          <article class="panel settings-panel"><div class="panel-heading"><div><strong>Quick toggle</strong><small>Choose the keyboard shortcut for the overlay.</small></div></div>
+            <label class="select-control"><span>Overlay hotkey</span><select id="hotkey-select"><option value="CommandOrControl+Alt+X">Ctrl + Alt + X</option><option value="CommandOrControl+Shift+X">Ctrl + Shift + X</option><option value="F8">F8</option></select></label>
+            <div class="status-note"><span class="status-check">✓</span><span><strong>Click-through overlay</strong><small>Mouse clicks pass through to the app underneath.</small></span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-saved">
+        <div class="page-head"><div><div class="eyebrow">YOUR PERSONAL DESIGNS</div><h1>Saved Crosshairs</h1><p>Name, organize, and reuse your own crosshair setups.</p></div><div class="head-actions"><button class="secondary-button" id="export-saved">↓ Export config</button><button class="primary-button" id="save-current-saved">＋ Save current</button></div></div>
+        <article class="panel saved-panel"><div class="saved-toolbar"><div><strong>Your saved crosshairs</strong><small>Saved privately on this device.</small></div><label class="search-box"><span>⌕</span><input id="saved-search" type="search" placeholder="Search saved..."></label></div><div id="saved-list"></div><div class="empty-state hidden" id="saved-empty">No saved crosshairs yet. Save your current design to keep it here.</div></article>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="crosshair-core.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
